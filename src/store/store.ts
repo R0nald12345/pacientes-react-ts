@@ -4,7 +4,7 @@ import {create} from 'zustand'
 
 import { DraftPatient, Patient } from '../types'
 
-import {createJSONStorage, devtools,persist } from 'zustand/middleware'
+import { devtools,persist } from 'zustand/middleware'
 
 import {v4 as uuidv4} from 'uuid'
 

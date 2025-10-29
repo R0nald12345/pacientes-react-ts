@@ -1,4 +1,4 @@
-import React from 'react'
+
 
 const Error = ({children}:{children:React.ReactNode}) => {
 
