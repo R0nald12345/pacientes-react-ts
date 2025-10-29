@@ -1,5 +1,4 @@
-
-
+// ...existing code...
 import {create} from 'zustand'
 
 import { DraftPatient, Patient } from '../types'
@@ -10,8 +9,6 @@ import {v4 as uuidv4} from 'uuid'
 
 //interface o type es similar
 type PatientState = {
-
-
     patients: Patient[]
     //Para editar el Form 
     activeId: Patient['id']
@@ -20,7 +17,6 @@ type PatientState = {
     //Para editar
     getPatientById: (id:Patient['id'])=>void
     updatePatient: (data:DraftPatient ) =>void
-
 }
 
 const createPatient = (patient:DraftPatient):Patient=>{
@@ -28,45 +24,42 @@ const createPatient = (patient:DraftPatient):Patient=>{
 }
 
 export const usePatientStore = create<PatientState>()(
-    devtools ( 
-    persist(  (set,get)=>(
-            {
-                patients: [],
-                activeId: '',
+    devtools(
+        persist((set) => ({   // <-- removed 'get' aquí
+            patients: [],
+            activeId: '',
 
-                addPatient:(data)=>{
+            addPatient:(data)=>{
+                const newPatient = createPatient(data)
+                set((state) => ({
+                    patients: [...state.patients, newPatient]
+                }))
+            },
 
-                    const newPatient = createPatient(data)
-                    
-                    set( (state)=>({
-                        patients: [...state.patients, newPatient]
-                    }) )
+            deletePatient: (id)=>{
+                set((state) => ({ 
+                    patients: state.patients.filter(patient => patient.id !== id)
+                }))
+            },
 
-                },
+            getPatientById:(id)=>{
+                set(() => ({
+                    activeId: id
+                }))
+            },
 
-                deletePatient: (id)=>{
-                    set( (state)=>({ 
-                        patients: state.patients.filter(patient => patient.id !== id)
-                    }) )
-                },
-
-                getPatientById:(id)=>{
-                    set( ()=> ({
-                            activeId: id
-                        })
-                    )
-                },
-
-                updatePatient: (data) =>{
-                    set( (state)=>({
-                        patients: state.patients.map( patient => patient.id === state.activeId ? {
-                            id:state.activeId, ...data} : patient), activeId: ''
-                    }))
-                }
+            updatePatient: (data) =>{
+                set((state) => ({
+                    patients: state.patients.map(patient => 
+                        patient.id === state.activeId ? { id: state.activeId, ...data } : patient
+                    ),
+                    activeId: ''
+                }))
             }
-        ),{
+        }), {
             name:'patient-storage',
-            // storage:createJSONStorage( ()=> localStorage)
+            // storage:createJSONStorage(() => localStorage)
         })
     )
 )
+// ...existing code...
